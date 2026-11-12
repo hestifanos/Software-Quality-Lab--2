@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,13 +37,15 @@ public class BinaryAPIControllerTest {
 
     @Test
     public void addStringTest() {
-        String result = BinaryAPIController.addString("111", "1010");
+        BinaryAPIController controller = new BinaryAPIController();
+        String result = controller.addString("111", "1010");
         assertEquals("10001", result);
     }
 
     @Test
     public void addJSONTest() {
-        BinaryAPIResult result = BinaryAPIController.addJSON("111", "1010");
+        BinaryAPIController controller = new BinaryAPIController();
+        BinaryAPIResult result = controller.addJSON("111", "1010");
         assertEquals("111", result.getOperand1());
         assertEquals("1010", result.getOperand2());
         assertEquals("10001", result.getResult());
@@ -51,12 +54,29 @@ public class BinaryAPIControllerTest {
 
     @Test
     public void addStringWithEmptyOperandsTest() {
-        String result = BinaryAPIController.addString("", "");
+        BinaryAPIController controller = new BinaryAPIController();
+        String result = controller.addString("", "");
         assertEquals("0", result);
     }
 
+    @Test
+    public void postOperationReturnsTheCalculatedValue() throws Exception {
+        mvc.perform(post("/")
+                        .param("operand1", "111")
+                        .param("operator", "+")
+                        .param("operand2", "1010"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("10001"));
+    }
 
-
+    @Test
+    public void postOperationRejectsInvalidOperands() throws Exception {
+        mvc.perform(post("/")
+                        .param("operand1", "102")
+                        .param("operator", "+")
+                        .param("operand2", "1"))
+                .andExpect(status().isBadRequest());
+    }
 
     @Test
     public void testOrString() {

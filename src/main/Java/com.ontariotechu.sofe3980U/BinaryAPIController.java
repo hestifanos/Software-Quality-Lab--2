@@ -4,14 +4,8 @@ package com.ontariotechu.sofe3980U;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
 @RestController
 public class BinaryAPIController {
 
@@ -29,9 +23,26 @@ public class BinaryAPIController {
             return ResponseEntity.badRequest().body("Invalid operator provided");
         }
 
-        // Perform the operation based on the operator
-
-        return ResponseEntity.ok("Result of the operation");
+        Binary first = new Binary(operand1);
+        Binary second = new Binary(operand2);
+        Binary result;
+        switch (operator) {
+            case "+":
+                result = Binary.add(first, second);
+                break;
+            case "*":
+                result = Binary.multiply(first, second);
+                break;
+            case "|":
+                result = Binary.bitwiseOR(first, second);
+                break;
+            case "&":
+                result = Binary.bitwiseAND(first, second);
+                break;
+            default:
+                return ResponseEntity.badRequest().body("Invalid operator provided");
+        }
+        return ResponseEntity.ok(result.getValue());
     }
 
     private boolean isValidBinary(String binary) {
@@ -45,7 +56,7 @@ public class BinaryAPIController {
 
 
     @GetMapping("/add")
-    public static String addString(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
+    public String addString(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
                                    @RequestParam(name = "operand2", required = false, defaultValue = "") String operand2){
 
 
@@ -58,7 +69,7 @@ public class BinaryAPIController {
 
 
     @GetMapping("/add_json")
-    public static BinaryAPIResult addJSON(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
+    public BinaryAPIResult addJSON(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
                                           @RequestParam(name = "operand2", required = false, defaultValue = "") String operand2) {
 
 
@@ -71,7 +82,7 @@ public class BinaryAPIController {
 
 
     @GetMapping("/or")
-    public static String orString(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
+    public String orString(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
                                   @RequestParam(name = "operand2", required = false, defaultValue = "") String operand2) {
 
 
@@ -82,7 +93,7 @@ public class BinaryAPIController {
     }
 
     @GetMapping("/or_json")
-    public static BinaryAPIResult orJSON(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
+    public BinaryAPIResult orJSON(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
                                          @RequestParam(name = "operand2", required = false, defaultValue = "") String operand2) {
 
 
@@ -94,7 +105,7 @@ public class BinaryAPIController {
     }
 
     @GetMapping("/and")
-    public static String andString(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
+    public String andString(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
                                    @RequestParam(name = "operand2", required = false, defaultValue = "") String operand2) {
 
 
@@ -105,7 +116,7 @@ public class BinaryAPIController {
     }
 
     @GetMapping("/and_json")
-    public static BinaryAPIResult andJSON(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
+    public BinaryAPIResult andJSON(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
                                           @RequestParam(name = "operand2", required = false, defaultValue = "") String operand2) {
 
 
@@ -116,7 +127,7 @@ public class BinaryAPIController {
     }
 
     @GetMapping("/multiply")
-    public static String multiplyString(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
+    public String multiplyString(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
                                         @RequestParam(name = "operand2", required = false, defaultValue = "") String operand2) {
 
 
@@ -127,7 +138,7 @@ public class BinaryAPIController {
     }
 
     @GetMapping("/multiply_json")
-    public static BinaryAPIResult multiplyJSON(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
+    public BinaryAPIResult multiplyJSON(@RequestParam(name = "operand1", required = false, defaultValue = "") String operand1,
                                                @RequestParam(name = "operand2", required = false, defaultValue = "") String operand2) {
 
 
@@ -142,7 +153,6 @@ public class BinaryAPIController {
 
 
 }
-
 
 
 

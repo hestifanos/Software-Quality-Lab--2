@@ -1,5 +1,8 @@
 package com.ontariotechu.sofe3980U;
 
+import java.math.BigInteger;
+import java.util.Objects;
+
 /**
  * Unsigned integer Binary variable
  *
@@ -14,6 +17,10 @@ public class Binary
      * @param number a String of the binary values. It should conatins only zeros or ones with any length and order. otherwise, the value of "0" will be stored.   Trailing zeros will be excluded and empty string will be considered as zero.
      */
     public Binary(String number) {
+        if (number == null || number.isEmpty()) {
+            this.number = "0";
+            return;
+        }
         for (int i = 0; i < number.length(); i++) {
             // check each character if it's not 0 or 1
             char ch=number.charAt(i);
@@ -32,7 +39,7 @@ public class Binary
         this.number=number.substring(beg); // exclude the trailing zeros if any
         // uncomment the following code
 
-        if(this.number=="") { // replace empty strings with a single zero
+        if(this.number.isEmpty()) {
             this.number="0";
         }
 
@@ -84,65 +91,29 @@ public class Binary
 
     // Method to perform bitwise AND operation
     public static Binary bitwiseAND(Binary number1, Binary number2) {
-        int maxLength = Math.max(number1.number.length(), number2.number.length());
-        StringBuilder result = new StringBuilder(maxLength);
-
-        for (int i = 0; i < maxLength; i++) {
-            char bit1 = (i < number1.number.length()) ? number1.number.charAt(i) : '0';
-            char bit2 = (i < number2.number.length()) ? number2.number.charAt(i) : '0';
-            result.append((bit1 == '1' && bit2 == '1') ? '1' : '0');
-        }
-
-        // Trim leading zeros if present
-        int length = result.length();
-        while (length > 1 && result.charAt(length - 1) == '0') {
-            result.deleteCharAt(length - 1);
-            length--;
-        }
-
-        return new Binary(result.toString());
+        Objects.requireNonNull(number1, "number1");
+        Objects.requireNonNull(number2, "number2");
+        BigInteger result = new BigInteger(number1.number, 2).and(new BigInteger(number2.number, 2));
+        return new Binary(result.toString(2));
     }
 
 
 
     // Method to perform bitwise OR operation
     public static Binary bitwiseOR(Binary number1, Binary number2) {
-        StringBuilder result = new StringBuilder();
-        int minLength = Math.min(number1.number.length(), number2.number.length()); // Find the minimum length
-
-        // Perform bitwise OR operation on each pair of bits up to the minimum length
-        for (int i = 0; i < minLength; i++) {
-            if (number1.number.charAt(i) == '1' || number2.number.charAt(i) == '1') {
-                result.append('1');
-            } else {
-                result.append('0');
-            }
-        }
-
-        // If one binary number is longer, append the remaining bits to the result
-        if (number1.number.length() > minLength) {
-            result.append(number1.number.substring(minLength));
-        } else if (number2.number.length() > minLength) {
-            result.append(number2.number.substring(minLength));
-        }
-
-        return new Binary(result.toString());
+        Objects.requireNonNull(number1, "number1");
+        Objects.requireNonNull(number2, "number2");
+        BigInteger result = new BigInteger(number1.number, 2).or(new BigInteger(number2.number, 2));
+        return new Binary(result.toString(2));
     }
 
 
     // Method to perform binary multiplication
     public static Binary multiply(Binary number1, Binary number2) {
-        // Convert binary numbers to integers for multiplication
-        int value1 = Integer.parseInt(number1.getValue(), 2);
-        int value2 = Integer.parseInt(number2.getValue(), 2);
-
-        // Perform integer multiplication
-        int result = value1 * value2;
-
-        // Convert the result back to binary string
-        String binaryResult = Integer.toBinaryString(result);
-
-        return new Binary(binaryResult);
+        Objects.requireNonNull(number1, "number1");
+        Objects.requireNonNull(number2, "number2");
+        BigInteger result = new BigInteger(number1.number, 2).multiply(new BigInteger(number2.number, 2));
+        return new Binary(result.toString(2));
     }
 
 
